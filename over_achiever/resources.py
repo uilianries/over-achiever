@@ -4,11 +4,11 @@ from flask import request
 from flask_restful import Resource, abort
 from flask_restful.reqparse import RequestParser
 
-import models as m
+from over_achiever import models as m
 
 
 db = None
-github = None
+google = None
 
 
 def _get_session():
@@ -56,7 +56,7 @@ def _get_user():
         abort(401, message='Access Denied!')
 
     token = request.headers['Access-Token']
-    user_data = github.get('user', token=dict(access_token=token)).data
+    user_data = google.get('userinfo', token=dict(access_token=token)).data
     email = user_data['email']
     name = user_data['name']
     q = _get_query()
@@ -117,6 +117,3 @@ class Goal(Resource):
         q = _get_query()
         goal = q(m.Goal).filter_by(user=user, name=args.name).one()
         goal.end = datetime.now()
-
-
-
